@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @joolomeee
-- 👀 I’m interested in being a full stack developer
-- 🌱 I’m currently learning javascript, css e html
+- 👀 I’m Full Stack Designer & Branding Manager
+- 🌱 +5 Years of Experience
 - 💞️ I’m looking to collaborate in several projects
 - 📫 How to reach is: me geral@joolomee.com
 
