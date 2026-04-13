@@ -1,39 +1,32 @@
 "use client";
 
-import { SITE_CONFIG, NAV_ITEMS } from "@/lib/constants";
+import { useLanguage } from "@/lib/i18n";
+import CrystalLogo from "./CrystalLogo";
+
+const navKeys = ["about", "services", "work", "process", "skills", "experience", "contact"] as const;
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
+  const year = new Date().getFullYear();
+  const nav = t.nav as Record<string, string>;
 
   return (
-    <footer className="border-t border-border py-12">
+    <footer className="border-t border-[#1e1e1e] py-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          {/* Brand */}
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-foreground">
-              {SITE_CONFIG.shortName}
-              <span className="text-accent">.</span>
-            </span>
+          <div className="flex items-center gap-3">
+            <CrystalLogo size={24} color="#E8787A" />
+            <span className="text-lg font-bold text-[#f5f5f5]">joolomee<span className="text-[#E8787A]">.</span></span>
           </div>
-
-          {/* Nav links */}
           <nav className="flex flex-wrap items-center justify-center gap-6">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-sm text-muted hover:text-accent transition-colors duration-300"
-              >
-                {item.label}
-              </a>
+            {navKeys.map(key => (
+              <a key={key} href={`#${key}`} className="text-sm text-[#8a8a8a] hover:text-[#E8787A] transition-colors duration-300">{nav[key] || key}</a>
             ))}
           </nav>
-
-          {/* Copyright */}
-          <p className="text-sm text-muted">
-            &copy; {currentYear} {SITE_CONFIG.name}
-          </p>
+          <div className="text-center md:text-right">
+            <p className="text-sm text-[#8a8a8a]">&copy; {year} Joana Lopes Mesquita. {t.footer?.copyright}</p>
+            <p className="text-xs text-[#555] mt-1">{t.footer?.madeWith}</p>
+          </div>
         </div>
       </div>
     </footer>

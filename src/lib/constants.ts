@@ -165,6 +165,7 @@ export const EXPERIENCE = [
 export const NAV_ITEMS = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
+  { label: "Process", href: "#process" },
   { label: "Work", href: "#work" },
   { label: "Skills", href: "#skills" },
   { label: "Experience", href: "#experience" },

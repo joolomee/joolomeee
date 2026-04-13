@@ -1,19 +1,21 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #050505;
+  --color-background: #0a0a0a;
   --color-foreground: #f5f5f5;
-  --color-muted: #a1a1aa;
-  --color-accent: #c8a2ff;
-  --color-accent-secondary: #7c3aed;
+  --color-muted: #8a8a8a;
+  --color-accent: #E8787A;
+  --color-accent-light: #F2A5A7;
+  --color-accent-dark: #C45A5C;
   --color-surface: #111111;
   --color-surface-hover: #1a1a1a;
-  --color-border: #222222;
-  --color-border-hover: #333333;
+  --color-surface-light: #161616;
+  --color-border: #1e1e1e;
+  --color-border-hover: #2a2a2a;
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* Smooth scrolling */
+/* ─── Base ─── */
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
@@ -22,154 +24,172 @@ html {
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   overflow-x: hidden;
+  cursor: none;
 }
 
-/* Selection color */
+@media (pointer: coarse) {
+  body { cursor: auto; }
+}
+
 ::selection {
   background: var(--color-accent);
-  color: var(--color-background);
+  color: #fff;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-accent); border-radius: 2px; }
 
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-border-hover);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent);
-}
-
-/* Noise texture overlay */
-.noise-overlay {
+/* ─── Noise Texture ─── */
+.noise {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Gradient text */
+/* ─── Gradient Text ─── */
 .gradient-text {
-  background: linear-gradient(135deg, #c8a2ff 0%, #7c3aed 50%, #c8a2ff 100%);
+  background: linear-gradient(135deg, #E8787A 0%, #F2A5A7 50%, #E8787A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-warm {
-  background: linear-gradient(135deg, #f5f5f5 0%, #c8a2ff 100%);
+  background: linear-gradient(135deg, #f5f5f5 0%, #E8787A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Glow effect */
-.glow {
-  box-shadow: 0 0 40px rgba(200, 162, 255, 0.15), 0 0 80px rgba(124, 58, 237, 0.1);
+/* ─── Glow ─── */
+.glow-coral {
+  box-shadow: 0 0 60px rgba(232, 120, 122, 0.15), 0 0 120px rgba(232, 120, 122, 0.08);
 }
 
 .glow-text {
-  text-shadow: 0 0 40px rgba(200, 162, 255, 0.3);
+  text-shadow: 0 0 40px rgba(232, 120, 122, 0.4);
 }
 
-/* Glass morphism */
+/* ─── Glass ─── */
 .glass {
-  background: rgba(17, 17, 17, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* Animated gradient border */
-.gradient-border {
+/* ─── Gradient Border Card ─── */
+.card-glow {
   position: relative;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
 }
 
-.gradient-border::before {
+.card-glow::before {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(200, 162, 255, 0.3), transparent, rgba(124, 58, 237, 0.3));
+  background: linear-gradient(135deg, rgba(232, 120, 122, 0.25), transparent 50%, rgba(242, 165, 167, 0.15));
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask-composite: xor;
 }
 
-/* Magnetic button effect */
-.magnetic-btn {
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/* ─── Grid Pattern ─── */
+.grid-dots {
+  background-image: radial-gradient(rgba(232, 120, 122, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
-/* Line animation */
-.line-reveal {
-  display: inline-block;
-  overflow: hidden;
+/* ─── Spotlight ─── */
+.spotlight {
+  background: radial-gradient(
+    800px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(232, 120, 122, 0.05),
+    transparent 40%
+  );
 }
 
-/* Cursor blink */
-.cursor-blink::after {
-  content: '|';
-  animation: blink 1s step-end infinite;
-  color: var(--color-accent);
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* Floating animation */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.float {
-  animation: float 6s ease-in-out infinite;
-}
-
-/* Marquee */
+/* ─── Marquee ─── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.marquee { animation: marquee 40s linear infinite; }
+.marquee-reverse { animation: marquee-reverse 40s linear infinite; }
 
-.marquee {
-  animation: marquee 30s linear infinite;
+/* ─── Float ─── */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(2deg); }
+}
+.float { animation: float 6s ease-in-out infinite; }
+.float-delay { animation: float 8s ease-in-out 2s infinite; }
+.float-slow { animation: float 10s ease-in-out 1s infinite; }
+
+/* ─── Rotate ─── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 25s linear infinite; }
+
+/* ─── Pulse Ring ─── */
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+.pulse-ring { animation: pulse-ring 3s ease-in-out infinite; }
+
+/* ─── Cursor Blink ─── */
+.blink::after {
+  content: '|';
+  color: var(--color-accent);
+  animation: blink-cursor 1s step-end infinite;
+}
+@keyframes blink-cursor { 50% { opacity: 0; } }
+
+/* ─── Custom Cursor ─── */
+.custom-cursor {
+  pointer-events: none;
+  position: fixed;
+  z-index: 99999;
+  mix-blend-mode: difference;
 }
 
-/* Grid pattern */
-.grid-pattern {
-  background-image:
-    linear-gradient(rgba(200, 162, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200, 162, 255, 0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
+/* ─── Interactive Hover States ─── */
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(232, 120, 122, 0.1);
 }
 
-/* Radial gradient spotlight */
-.spotlight {
-  background: radial-gradient(
-    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(200, 162, 255, 0.06),
-    transparent 40%
-  );
+/* ─── Section Divider ─── */
+.section-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent), transparent);
+}
+
+/* ─── Language Switcher ─── */
+.lang-active {
+  color: var(--color-accent);
+  font-weight: 600;
 }
