@@ -177,32 +177,18 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* Main heading: 3 lines */}
-            <div className="mb-8">
-              {/* Line 1 - regular white */}
-              <motion.h1
-                variants={fadeUp}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.2rem] font-light leading-[1.05] tracking-tight text-[#f5f5f5]"
-              >
+            {/* Main heading: 3 lines — single h1 for SEO */}
+            <motion.h1 variants={fadeUp} className="mb-8">
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.2rem] font-light leading-[1.05] tracking-tight text-[#f5f5f5]">
                 {hero.title1 || "Designing Digital"}
-              </motion.h1>
-
-              {/* Line 2 - bold gradient */}
-              <motion.h1
-                variants={fadeUp}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.2rem] font-bold leading-[1.05] tracking-tight gradient-text"
-              >
+              </span>
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.2rem] font-bold leading-[1.05] tracking-tight gradient-text">
                 {hero.title2 || "Experiences That"}
-              </motion.h1>
-
-              {/* Line 3 - regular white */}
-              <motion.h1
-                variants={fadeUp}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.2rem] font-light leading-[1.05] tracking-tight text-[#f5f5f5]"
-              >
+              </span>
+              <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.2rem] font-light leading-[1.05] tracking-tight text-[#f5f5f5]">
                 {hero.title3 || "Truly Matter"}
-              </motion.h1>
-            </div>
+              </span>
+            </motion.h1>
 
             {/* Subtitle */}
             <motion.p

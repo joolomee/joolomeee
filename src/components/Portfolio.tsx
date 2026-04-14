@@ -467,13 +467,11 @@ export default function Portfolio() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-4xl md:text-5xl font-bold mb-4"
         >
-          {t.portfolio?.heading ? (
-            <span dangerouslySetInnerHTML={{ __html: t.portfolio.heading }} />
-          ) : (
-            <>
-              Featured <span className="gradient-text">Projects</span>
-            </>
-          )}
+          {(t.portfolio?.heading || "Featured Projects").split(" ").map((word: string, i: number, arr: string[]) => (
+            <span key={i}>
+              {i === arr.length - 1 ? <span className="gradient-text">{word}</span> : word + " "}
+            </span>
+          ))}
         </motion.h2>
 
         <motion.p

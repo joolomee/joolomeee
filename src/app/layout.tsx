@@ -38,6 +38,23 @@ export const metadata: Metadata = {
   category: "Design Portfolio",
 };
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  name: "joolomee",
+  alternateName: "Joana Lopes Mesquita Portfolio",
+  url: siteUrl,
+  description: siteDescription,
+  publisher: { "@id": `${siteUrl}/#person` },
+  inLanguage: ["pt-PT", "en-US", "es-ES", "fr-FR", "de-DE"],
+  potentialAction: {
+    "@type": "SearchAction",
+    target: { "@type": "EntryPoint", urlTemplate: `${siteUrl}/?q={search_term_string}` },
+    "query-input": "required name=search_term_string",
+  },
+};
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -81,12 +98,27 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="pt" className="h-full antialiased">
       <head>
+        {/* Geo targeting for local SEO */}
         <meta name="geo.region" content="PT" />
         <meta name="geo.placename" content="Portugal" />
+        <meta name="geo.position" content="38.7223;-9.1393" />
+        <meta name="ICBM" content="38.7223, -9.1393" />
+
+        {/* Search engine verification — replace YOUR_CODE with actual codes */}
+        <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" />
+        <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" />
+
+        {/* Favicons & touch icons */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* Structured data — JSON-LD */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-        <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="min-h-full flex flex-col">
         <div className="noise" aria-hidden="true" />
