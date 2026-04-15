@@ -1,0 +1,292 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     joolomee · Webflow <head> injection
+     Paste into: Site Settings → Custom Code → Head Code
+     ═══════════════════════════════════════════════════════════════════════ -->
+
+<!-- Inter font -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+  /* ─── Brand tokens ─── */
+  :root {
+    --jlm-bg: #0a0a0a;
+    --jlm-surface: #111111;
+    --jlm-surface-hover: #1a1a1a;
+    --jlm-surface-light: #161616;
+    --jlm-border: #1e1e1e;
+    --jlm-border-hover: #2a2a2a;
+    --jlm-fg: #f5f5f5;
+    --jlm-muted: #8a8a8a;
+    --jlm-coral: #e8787a;
+    --jlm-coral-lt: #f2a5a7;
+    --jlm-coral-dk: #c45a5c;
+    --jlm-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+  }
+
+  /* ─── Base ─── */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+  body {
+    background: var(--jlm-bg);
+    color: var(--jlm-fg);
+    font-family: var(--jlm-sans);
+    overflow-x: hidden;
+  }
+  @media (pointer: fine) {
+    body.jlm-has-cursor {
+      cursor: none;
+    }
+    body.jlm-has-cursor a,
+    body.jlm-has-cursor button,
+    body.jlm-has-cursor input,
+    body.jlm-has-cursor textarea,
+    body.jlm-has-cursor select,
+    body.jlm-has-cursor [data-cursor="hover"] {
+      cursor: none;
+    }
+  }
+  ::selection {
+    background: var(--jlm-coral);
+    color: #fff;
+  }
+
+  /* ─── Scrollbar ─── */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--jlm-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--jlm-coral);
+    border-radius: 2px;
+  }
+
+  /* ─── Noise overlay ─── */
+  .jlm-noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ─── Gradient text ─── */
+  .jlm-gradient-text {
+    background: linear-gradient(
+      135deg,
+      #e8787a 0%,
+      #f2a5a7 50%,
+      #e8787a 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+  .jlm-gradient-text-warm {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8787a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ─── Glow ─── */
+  .jlm-glow-coral {
+    box-shadow: 0 0 60px rgba(232, 120, 122, 0.15),
+      0 0 120px rgba(232, 120, 122, 0.08);
+  }
+  .jlm-glow-text {
+    text-shadow: 0 0 40px rgba(232, 120, 122, 0.4);
+  }
+
+  /* ─── Glass ─── */
+  .jlm-glass {
+    background: rgba(10, 10, 10, 0.7);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  /* ─── Gradient border card ─── */
+  .jlm-card-glow {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .jlm-card-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(232, 120, 122, 0.25),
+      transparent 50%,
+      rgba(242, 165, 167, 0.15)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* ─── Dot grid background ─── */
+  .jlm-grid-dots {
+    background-image: radial-gradient(
+      rgba(232, 120, 122, 0.08) 1px,
+      transparent 1px
+    );
+    background-size: 40px 40px;
+  }
+
+  /* ─── Spotlight (cursor-tracked radial) ─── */
+  .jlm-spotlight {
+    background: radial-gradient(
+      800px circle at var(--jlm-mx, 50%) var(--jlm-my, 50%),
+      rgba(232, 120, 122, 0.05),
+      transparent 40%
+    );
+  }
+
+  /* ─── Section divider bar ─── */
+  .jlm-section-line {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--jlm-coral), transparent);
+  }
+
+  /* ─── Hover lift ─── */
+  .jlm-hover-lift {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      box-shadow 0.4s ease;
+  }
+  .jlm-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(232, 120, 122, 0.1);
+  }
+
+  /* ─── Animations ─── */
+  @keyframes jlm-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes jlm-marquee-reverse {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @keyframes jlm-float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(2deg);
+    }
+  }
+  @keyframes jlm-spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes jlm-pulse-ring {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+  }
+  @keyframes jlm-blink-cursor {
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes jlm-ping {
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  .jlm-marquee {
+    animation: jlm-marquee 40s linear infinite;
+  }
+  .jlm-marquee-reverse {
+    animation: jlm-marquee-reverse 40s linear infinite;
+  }
+  .jlm-float {
+    animation: jlm-float 6s ease-in-out infinite;
+  }
+  .jlm-float-delay {
+    animation: jlm-float 8s ease-in-out 2s infinite;
+  }
+  .jlm-float-slow {
+    animation: jlm-float 10s ease-in-out 1s infinite;
+  }
+  .jlm-spin-slow {
+    animation: jlm-spin-slow 25s linear infinite;
+  }
+  .jlm-pulse-ring {
+    animation: jlm-pulse-ring 3s ease-in-out infinite;
+  }
+  .jlm-ping {
+    animation: jlm-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .jlm-blink::after {
+    content: "|";
+    color: var(--jlm-coral);
+    animation: jlm-blink-cursor 1s step-end infinite;
+  }
+
+  /* ─── Active language pill ─── */
+  .jlm-lang-active {
+    color: var(--jlm-coral) !important;
+    font-weight: 600;
+  }
+
+  /* ─── Respect reduced motion ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .jlm-marquee,
+    .jlm-marquee-reverse,
+    .jlm-float,
+    .jlm-float-delay,
+    .jlm-float-slow,
+    .jlm-spin-slow,
+    .jlm-pulse-ring,
+    .jlm-ping {
+      animation: none !important;
+    }
+  }
+</style>

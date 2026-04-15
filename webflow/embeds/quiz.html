@@ -1,0 +1,281 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     joolomee · Service Quiz — Webflow Embed
+     3 questions → 4 possible archetype results. Reads window.__JLM_T__.quiz
+     if present (set by body-code.html). Falls back to bundled PT/EN copy.
+     Requires body-code.html for i18n switching (optional).
+     CTA links to #contact — make sure your Webflow page has that anchor.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="jlm-quiz" id="jlm-quiz">
+  <div class="jlm-quiz__wrap">
+    <div class="jlm-card-glow jlm-quiz__card">
+      <div class="jlm-quiz__inner" data-jlm-quiz-root></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .jlm-quiz { position: relative; padding: 80px 0; }
+  .jlm-quiz__wrap { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+  .jlm-quiz__card { }
+  .jlm-quiz__inner {
+    background: var(--jlm-surface, #111);
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+    font-family: var(--jlm-sans, "Inter", system-ui, sans-serif);
+    color: var(--jlm-fg, #f5f5f5);
+    min-height: 380px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  @media (min-width: 768px) { .jlm-quiz__inner { padding: 48px; } }
+
+  .jlm-quiz__step { width: 100%; animation: jlm-quiz-in 0.35s ease both; }
+  @keyframes jlm-quiz-in {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .jlm-quiz__icon {
+    width: 64px; height: 64px; margin: 0 auto 24px;
+    border-radius: 50%;
+    background: rgba(232, 120, 122, 0.10);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .jlm-quiz__icon--win { background: rgba(232, 120, 122, 0.22); }
+
+  .jlm-quiz__title { font-size: 1.5rem; font-weight: 700; margin: 0 0 8px; }
+  .jlm-quiz__subtitle { font-size: 0.875rem; color: var(--jlm-muted, #8a8a8a); margin: 0 0 32px; }
+
+  .jlm-quiz__qtext { font-size: 1.125rem; font-weight: 700; margin: 0 0 32px; }
+
+  .jlm-quiz__progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 32px; }
+  .jlm-quiz__dot { height: 4px; border-radius: 9999px; background: var(--jlm-border, #1e1e1e); width: 24px; transition: all 0.3s ease; }
+  .jlm-quiz__dot.is-active { width: 40px; background: var(--jlm-coral, #e8787a); }
+
+  .jlm-quiz__options { display: flex; flex-direction: column; gap: 12px; }
+  .jlm-quiz__opt {
+    width: 100%;
+    text-align: left;
+    padding: 16px 24px;
+    border-radius: 12px;
+    border: 1px solid var(--jlm-border, #1e1e1e);
+    background: transparent;
+    color: var(--jlm-muted, #8a8a8a);
+    font-family: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .jlm-quiz__opt:hover {
+    border-color: rgba(232, 120, 122, 0.5);
+    color: var(--jlm-fg, #f5f5f5);
+    background: rgba(232, 120, 122, 0.05);
+  }
+
+  .jlm-quiz__btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 32px;
+    border-radius: 9999px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: 0;
+  }
+  .jlm-quiz__btn--primary {
+    background: var(--jlm-coral, #e8787a);
+    color: var(--jlm-bg, #0a0a0a);
+  }
+  .jlm-quiz__btn--primary:hover { background: var(--jlm-coral-lt, #f2a5a7); }
+  .jlm-quiz__btn--ghost {
+    background: transparent;
+    border: 1px solid var(--jlm-border, #1e1e1e);
+    color: var(--jlm-muted, #8a8a8a);
+  }
+  .jlm-quiz__btn--ghost:hover {
+    border-color: rgba(232, 120, 122, 0.5);
+    color: var(--jlm-coral, #e8787a);
+  }
+
+  .jlm-quiz__actions { display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: center; }
+  @media (min-width: 640px) { .jlm-quiz__actions { flex-direction: row; } }
+
+  .jlm-quiz__result-title {
+    font-size: 1.5rem; font-weight: 700; margin: 0 0 8px;
+    background: linear-gradient(135deg, #e8787a 0%, #f2a5a7 50%, #e8787a 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; color: transparent;
+  }
+  .jlm-quiz__result-desc { color: var(--jlm-muted, #8a8a8a); margin: 0 0 32px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jlm-quiz__step { animation: none !important; }
+  }
+</style>
+
+<script>
+(function () {
+  var FALLBACK = {
+    pt: {
+      title: "Que serviço precisa?",
+      subtitle: "Responda a 3 perguntas rápidas e descubra como posso ajudar.",
+      start: "Descobrir", restart: "Recomeçar", letsTalk: "Vamos Falar",
+      questions: [
+        { q: "Tem marca/logótipo?", options: ["Não, preciso de tudo", "Sim, mas precisa de refresh", "Sim, está ótima"] },
+        { q: "Tem website?", options: ["Não", "Sim, mas precisa de redesign", "Sim, está atualizado"] },
+        { q: "Qual é a prioridade?", options: ["Criar marca do zero", "Melhorar presença digital", "Campanhas de marketing", "Tudo — preciso de um pacote completo"] }
+      ],
+      results: [
+        { title: "Pacote Completo", desc: "Precisa de marca, site e estratégia. Eu faço tudo — do zero ao lançamento." },
+        { title: "Brand Refresh + Web", desc: "A base existe, mas precisa de evolução. Redesenho e elevo a sua presença." },
+        { title: "Marketing & Growth", desc: "Marca e site estão sólidos. Vamos amplificar com campanhas que convertem." },
+        { title: "Consultoria Estratégica", desc: "Tem tudo no sítio. Posso ajudar a otimizar e escalar o que já funciona." }
+      ]
+    },
+    en: {
+      title: "What service do you need?",
+      subtitle: "Answer 3 quick questions and find out how I can help.",
+      start: "Find Out", restart: "Start Over", letsTalk: "Let's Talk",
+      questions: [
+        { q: "Do you have a brand/logo?", options: ["No, I need everything", "Yes, but needs a refresh", "Yes, it's great"] },
+        { q: "Do you have a website?", options: ["No", "Yes, but needs redesign", "Yes, it's up to date"] },
+        { q: "What's the priority?", options: ["Build brand from scratch", "Improve digital presence", "Marketing campaigns", "Everything — I need the full package"] }
+      ],
+      results: [
+        { title: "Full Package", desc: "You need brand, site and strategy. I do it all — from zero to launch." },
+        { title: "Brand Refresh + Web", desc: "The foundation exists, but needs evolution. I redesign and elevate your presence." },
+        { title: "Marketing & Growth", desc: "Brand and site are solid. Let's amplify with campaigns that convert." },
+        { title: "Strategic Consulting", desc: "Everything's in place. I can help optimize and scale what already works." }
+      ]
+    }
+  };
+
+  var ICON_HELP = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8787A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="#E8787A"/></svg>';
+  var ICON_CHECK = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8787A" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+
+  function getCopy() {
+    // Prefer translations provided by body-code.html
+    var locale = (window.joolomee && window.joolomee.getLocale && window.joolomee.getLocale()) || "pt";
+    var viaGlobal = window.__JLM_T__ && window.__JLM_T__.quiz;
+    if (viaGlobal && viaGlobal.questions && viaGlobal.questions.length) {
+      return Object.assign({}, viaGlobal, {
+        letsTalk: (window.__JLM_T__.nav && window.__JLM_T__.nav.letsTalk) || "Let's Talk"
+      });
+    }
+    return FALLBACK[locale] || FALLBACK.en;
+  }
+
+  var scope = document.currentScript.parentElement;
+  var root  = scope.querySelector("[data-jlm-quiz-root]")
+           || document.querySelector("[data-jlm-quiz-root]:not([data-jlm-ready])");
+  if (!root) return;
+  root.setAttribute("data-jlm-ready", "");
+
+  var state = { started: false, step: 0, answers: [], result: null };
+
+  function renderStart(copy) {
+    root.innerHTML =
+      '<div class="jlm-quiz__step">' +
+        '<div class="jlm-quiz__icon">' + ICON_HELP + '</div>' +
+        '<h3 class="jlm-quiz__title">' + escapeHtml(copy.title) + '</h3>' +
+        '<p class="jlm-quiz__subtitle">' + escapeHtml(copy.subtitle) + '</p>' +
+        '<button class="jlm-quiz__btn jlm-quiz__btn--primary" data-cursor="hover" data-jlm-act="start">' +
+          escapeHtml(copy.start) + ' <span aria-hidden="true">&rarr;</span>' +
+        '</button>' +
+      '</div>';
+  }
+
+  function renderQuestion(copy) {
+    var q = copy.questions[state.step];
+    if (!q) return renderResult(copy);
+    var dots = copy.questions.map(function (_, i) {
+      return '<div class="jlm-quiz__dot' + (i <= state.step ? ' is-active' : '') + '"></div>';
+    }).join("");
+    var opts = q.options.map(function (o, i) {
+      return '<button class="jlm-quiz__opt" data-cursor="hover" data-jlm-act="answer" data-i="' + i + '">' + escapeHtml(o) + '</button>';
+    }).join("");
+    root.innerHTML =
+      '<div class="jlm-quiz__step">' +
+        '<div class="jlm-quiz__progress">' + dots + '</div>' +
+        '<h3 class="jlm-quiz__qtext">' + escapeHtml(q.q) + '</h3>' +
+        '<div class="jlm-quiz__options">' + opts + '</div>' +
+      '</div>';
+  }
+
+  function computeResult(copy) {
+    var score = state.answers.reduce(function (a, b) { return a + b; }, 0);
+    var maxScore = state.answers.length * 2;
+    var ratio = maxScore > 0 ? score / maxScore : 0;
+    var idx = ratio < 0.25 ? 0 : ratio < 0.5 ? 1 : ratio < 0.75 ? 2 : 3;
+    return Math.min(idx, (copy.results || []).length - 1);
+  }
+
+  function renderResult(copy) {
+    var r = copy.results[state.result] || { title: "", desc: "" };
+    root.innerHTML =
+      '<div class="jlm-quiz__step">' +
+        '<div class="jlm-quiz__icon jlm-quiz__icon--win">' + ICON_CHECK + '</div>' +
+        '<h3 class="jlm-quiz__result-title">' + escapeHtml(r.title) + '</h3>' +
+        '<p class="jlm-quiz__result-desc">' + escapeHtml(r.desc) + '</p>' +
+        '<div class="jlm-quiz__actions">' +
+          '<a class="jlm-quiz__btn jlm-quiz__btn--primary" href="#contact" data-cursor="hover">' +
+            escapeHtml(copy.letsTalk || "Let's Talk") + ' <span aria-hidden="true">&rarr;</span>' +
+          '</a>' +
+          '<button class="jlm-quiz__btn jlm-quiz__btn--ghost" data-cursor="hover" data-jlm-act="restart">' +
+            escapeHtml(copy.restart) +
+          '</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function render() {
+    var copy = getCopy();
+    if (!state.started)                          return renderStart(copy);
+    if (state.result != null)                    return renderResult(copy);
+    return renderQuestion(copy);
+  }
+
+  root.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-jlm-act]");
+    if (!el) return;
+    var act = el.getAttribute("data-jlm-act");
+    var copy = getCopy();
+    if (act === "start") {
+      state.started = true; state.step = 0; state.answers = []; state.result = null;
+      return render();
+    }
+    if (act === "answer") {
+      var i = parseInt(el.getAttribute("data-i") || "0", 10);
+      state.answers.push(i);
+      if (state.step < copy.questions.length - 1) {
+        state.step += 1;
+      } else {
+        state.result = computeResult(copy);
+      }
+      return render();
+    }
+    if (act === "restart") {
+      state = { started: false, step: 0, answers: [], result: null };
+      return render();
+    }
+  });
+
+  // Re-render when locale changes
+  document.addEventListener("jlm:locale", render);
+
+  // Initial render (wait a tick so body-code.html can set __JLM_T__ first)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", render);
+  } else {
+    setTimeout(render, 0);
+  }
+})();
+</script>

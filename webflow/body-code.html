@@ -1,0 +1,305 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     joolomee · Webflow </body> injection
+     Paste into: Site Settings → Custom Code → Footer Code
+     Provides: custom cursor, mouse spotlight, i18n translator, noise overlay
+     ═══════════════════════════════════════════════════════════════════════ -->
+
+<!-- Fixed overlays injected once -->
+<div class="jlm-noise" aria-hidden="true"></div>
+
+<style>
+  /* Custom cursor (scoped) */
+  .jlm-cursor-dot,
+  .jlm-cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    border-radius: 9999px;
+    transform: translate(-50%, -50%);
+    will-change: transform, width, height;
+    opacity: 0;
+    transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease,
+      border-width 0.2s ease;
+  }
+  .jlm-cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--jlm-coral, #e8787a);
+    z-index: 99999;
+    mix-blend-mode: difference;
+  }
+  .jlm-cursor-ring {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(232, 120, 122, 0.5);
+    z-index: 99998;
+  }
+  .jlm-cursor-ring.is-hover {
+    width: 56px;
+    height: 56px;
+    border-width: 2px;
+    border-color: rgba(232, 120, 122, 0.8);
+  }
+</style>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ═══════════════════════════════════════════════
+     TRANSLATIONS
+     Any element with [data-i18n="dotted.key"] gets translated.
+     Use [data-i18n-html] to allow raw HTML.
+     Use [data-i18n-attr="attr:key;attr2:key2"] to target attributes.
+     ═══════════════════════════════════════════════ */
+  var T = {
+    pt: {
+      nav: { about: "Sobre", services: "Serviços", work: "Trabalho", process: "Processo", skills: "Competências", experience: "Experiência", contact: "Contacto", letsTalk: "Vamos Falar" },
+      hero: { badge: "Disponível para novos projetos", title1: "Olá! Sou a designer", title2: "que a tua marca", title3: "estava à procura.", subtitle: "Full Stack Designer & Brand Strategist em Portugal. Crio marcas do zero, desenho interfaces e construo produtos digitais que ficam na memória.", cta1: "Ver Trabalho", cta2: "Falar Comigo" },
+      contact: { heading: "Vamos criar algo incrível", subtitle: "Tem um projeto em mente? Adorava ouvir sobre ele.", name: "Nome", email: "Email", service: "Tipo de Serviço", message: "Mensagem", send: "Enviar Mensagem", sending: "A enviar...", sent: "Mensagem enviada!" },
+      quiz: { title: "Que serviço precisa?", subtitle: "Responda a 3 perguntas rápidas e descubra como posso ajudar.", start: "Descobrir", restart: "Recomeçar",
+        questions: [
+          { q: "Tem marca/logótipo?", options: ["Não, preciso de tudo", "Sim, mas precisa de refresh", "Sim, está ótima"] },
+          { q: "Tem website?", options: ["Não", "Sim, mas precisa de redesign", "Sim, está atualizado"] },
+          { q: "Qual é a prioridade?", options: ["Criar marca do zero", "Melhorar presença digital", "Campanhas de marketing", "Tudo — preciso de um pacote completo"] }
+        ],
+        results: [
+          { title: "Pacote Completo", desc: "Precisa de marca, site e estratégia. Eu faço tudo — do zero ao lançamento." },
+          { title: "Brand Refresh + Web", desc: "A base existe, mas precisa de evolução. Redesenho e elevo a sua presença." },
+          { title: "Marketing & Growth", desc: "Marca e site estão sólidos. Vamos amplificar com campanhas que convertem." },
+          { title: "Consultoria Estratégica", desc: "Tem tudo no sítio. Posso ajudar a otimizar e escalar o que já funciona." }
+        ]
+      },
+      footer: { copyright: "Todos os direitos reservados.", madeWith: "Feito com paixão em Portugal" }
+    },
+    en: {
+      nav: { about: "About", services: "Services", work: "Work", process: "Process", skills: "Skills", experience: "Experience", contact: "Contact", letsTalk: "Let's Talk" },
+      hero: { badge: "Available for new projects", title1: "Hi! I'm the designer", title2: "your brand has been", title3: "looking for.", subtitle: "Full Stack Designer & Brand Strategist based in Portugal. I build brands from scratch, design interfaces, and create digital products people remember.", cta1: "View My Work", cta2: "Get In Touch" },
+      contact: { heading: "Let's create something great", subtitle: "Have a project in mind? I'd love to hear about it.", name: "Name", email: "Email", service: "Service Type", message: "Message", send: "Send Message", sending: "Sending...", sent: "Message sent!" },
+      quiz: { title: "What service do you need?", subtitle: "Answer 3 quick questions and find out how I can help.", start: "Find Out", restart: "Start Over",
+        questions: [
+          { q: "Do you have a brand/logo?", options: ["No, I need everything", "Yes, but needs a refresh", "Yes, it's great"] },
+          { q: "Do you have a website?", options: ["No", "Yes, but needs redesign", "Yes, it's up to date"] },
+          { q: "What's the priority?", options: ["Build brand from scratch", "Improve digital presence", "Marketing campaigns", "Everything — I need the full package"] }
+        ],
+        results: [
+          { title: "Full Package", desc: "You need brand, site and strategy. I do it all — from zero to launch." },
+          { title: "Brand Refresh + Web", desc: "The foundation exists, but needs evolution. I redesign and elevate your presence." },
+          { title: "Marketing & Growth", desc: "Brand and site are solid. Let's amplify with campaigns that convert." },
+          { title: "Strategic Consulting", desc: "Everything's in place. I can help optimize and scale what already works." }
+        ]
+      },
+      footer: { copyright: "All rights reserved.", madeWith: "Made with passion in Portugal" }
+    },
+    es: {
+      nav: { about: "Sobre Mí", services: "Servicios", work: "Trabajo", process: "Proceso", skills: "Habilidades", experience: "Experiencia", contact: "Contacto", letsTalk: "Hablemos" },
+      hero: { badge: "Disponible para nuevos proyectos", title1: "¡Hola! Soy la diseñadora", title2: "que tu marca estaba", title3: "buscando.", subtitle: "Full Stack Designer & Brand Strategist en Portugal. Creo marcas desde cero, diseño interfaces y construyo productos digitales memorables.", cta1: "Ver Trabajo", cta2: "Contactar" },
+      footer: { copyright: "Todos los derechos reservados.", madeWith: "Hecho con pasión en Portugal" }
+    },
+    fr: {
+      nav: { about: "À Propos", services: "Services", work: "Projets", process: "Processus", skills: "Compétences", experience: "Expérience", contact: "Contact", letsTalk: "Parlons-en" },
+      hero: { badge: "Disponible pour de nouveaux projets", title1: "Salut ! Je suis la designer", title2: "que votre marque", title3: "recherchait.", subtitle: "Full Stack Designer & Brand Strategist au Portugal. Je crée des marques de zéro, conçois des interfaces et construis des produits digitaux mémorables.", cta1: "Voir Projets", cta2: "Me Contacter" },
+      footer: { copyright: "Tous droits réservés.", madeWith: "Fait avec passion au Portugal" }
+    },
+    de: {
+      nav: { about: "Über Mich", services: "Leistungen", work: "Arbeiten", process: "Prozess", skills: "Fähigkeiten", experience: "Erfahrung", contact: "Kontakt", letsTalk: "Sprechen Wir" },
+      hero: { badge: "Verfügbar für neue Projekte", title1: "Hi! Ich bin die Designerin,", title2: "die Ihre Marke", title3: "gesucht hat.", subtitle: "Full Stack Designer & Brand Strategist in Portugal. Ich baue Marken von Grund auf, gestalte Interfaces und entwickle digitale Produkte, die im Gedächtnis bleiben.", cta1: "Arbeiten Ansehen", cta2: "Kontakt" },
+      footer: { copyright: "Alle Rechte vorbehalten.", madeWith: "Mit Leidenschaft in Portugal gemacht" }
+    }
+  };
+  var LOCALES = ["en", "pt", "es", "fr", "de"];
+  var STORAGE_KEY = "joolomee-lang";
+
+  function detectLocale() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved && LOCALES.indexOf(saved) !== -1) return saved;
+    } catch (_) {}
+    var nav = (navigator.language || "").toLowerCase();
+    if (nav.indexOf("pt") === 0) return "pt";
+    if (nav.indexOf("es") === 0) return "es";
+    if (nav.indexOf("fr") === 0) return "fr";
+    if (nav.indexOf("de") === 0) return "de";
+    return "en";
+  }
+
+  function lookup(dict, path) {
+    var parts = path.split(".");
+    var cur = dict;
+    for (var i = 0; i < parts.length; i++) {
+      if (cur == null) return null;
+      cur = cur[parts[i]];
+    }
+    return cur == null ? null : cur;
+  }
+
+  function applyTranslations(locale) {
+    var dict = T[locale] || T.en;
+    // Text nodes
+    var nodes = document.querySelectorAll("[data-i18n]");
+    nodes.forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      var val = lookup(dict, key);
+      if (val == null) val = lookup(T.en, key);
+      if (val == null) return;
+      if (el.hasAttribute("data-i18n-html")) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
+    });
+    // Attribute targets
+    var attrNodes = document.querySelectorAll("[data-i18n-attr]");
+    attrNodes.forEach(function (el) {
+      var spec = el.getAttribute("data-i18n-attr") || "";
+      spec.split(";").forEach(function (pair) {
+        var p = pair.trim();
+        if (!p) return;
+        var idx = p.indexOf(":");
+        if (idx < 0) return;
+        var attr = p.slice(0, idx).trim();
+        var key = p.slice(idx + 1).trim();
+        var val = lookup(dict, key);
+        if (val == null) val = lookup(T.en, key);
+        if (val != null) el.setAttribute(attr, val);
+      });
+    });
+    // Expose current dict + locale for embeds
+    window.__JLM_LOCALE__ = locale;
+    window.__JLM_T__ = dict;
+    document.documentElement.setAttribute("lang", locale);
+    // Lang-switcher active styling
+    document.querySelectorAll("[data-lang]").forEach(function (btn) {
+      btn.classList.toggle(
+        "jlm-lang-active",
+        btn.getAttribute("data-lang") === locale
+      );
+    });
+    // Fire event so embeds can re-render
+    document.dispatchEvent(
+      new CustomEvent("jlm:locale", { detail: { locale: locale, t: dict } })
+    );
+  }
+
+  function setLocale(locale) {
+    if (LOCALES.indexOf(locale) === -1) return;
+    try { localStorage.setItem(STORAGE_KEY, locale); } catch (_) {}
+    applyTranslations(locale);
+  }
+
+  // Public API
+  window.joolomee = window.joolomee || {};
+  window.joolomee.setLocale = setLocale;
+  window.joolomee.getLocale = function () { return window.__JLM_LOCALE__ || "en"; };
+  window.joolomee.t = function (path) {
+    var d = window.__JLM_T__ || T.en;
+    var v = lookup(d, path);
+    return v == null ? lookup(T.en, path) : v;
+  };
+
+  // Lang-switcher click delegation
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-lang]");
+    if (!btn) return;
+    e.preventDefault();
+    setLocale(btn.getAttribute("data-lang"));
+  });
+
+  /* ═══════════════════════════════════════════════
+     CUSTOM CURSOR
+     ═══════════════════════════════════════════════ */
+  function initCursor() {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    document.body.classList.add("jlm-has-cursor");
+
+    var dot = document.createElement("div");
+    dot.className = "jlm-cursor-dot";
+    var ring = document.createElement("div");
+    ring.className = "jlm-cursor-ring";
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+
+    var mx = -100, my = -100;
+    var rx = -100, ry = -100;
+    var rafId = null;
+
+    function tick() {
+      // Spring-lerp the ring toward the mouse
+      rx += (mx - rx) * 0.18;
+      ry += (my - ry) * 0.18;
+      dot.style.transform =
+        "translate(" + mx + "px," + my + "px) translate(-50%,-50%)";
+      ring.style.transform =
+        "translate(" + rx + "px," + ry + "px) translate(-50%,-50%)";
+      rafId = requestAnimationFrame(tick);
+    }
+
+    document.addEventListener("mousemove", function (e) {
+      mx = e.clientX;
+      my = e.clientY;
+      if (dot.style.opacity !== "1") {
+        dot.style.opacity = "1";
+        ring.style.opacity = "1";
+      }
+      if (rafId == null) tick();
+    });
+    document.addEventListener("mouseleave", function () {
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    });
+    document.addEventListener("mouseenter", function () {
+      dot.style.opacity = "1";
+      ring.style.opacity = "1";
+    });
+
+    function setHover(state) {
+      ring.classList.toggle("is-hover", state);
+    }
+    var hoverSel =
+      'a, button, input, textarea, select, [data-cursor="hover"]';
+    document.addEventListener("mouseover", function (e) {
+      if (e.target.closest && e.target.closest(hoverSel)) setHover(true);
+    });
+    document.addEventListener("mouseout", function (e) {
+      if (e.target.closest && e.target.closest(hoverSel)) setHover(false);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     MOUSE-TRACKED SPOTLIGHT
+     Any element with class .jlm-spotlight gets --jlm-mx/--jlm-my updated.
+     ═══════════════════════════════════════════════ */
+  function initSpotlight() {
+    var targets = document.querySelectorAll(".jlm-spotlight");
+    if (!targets.length) return;
+    targets.forEach(function (el) {
+      el.addEventListener(
+        "mousemove",
+        function (e) {
+          var r = el.getBoundingClientRect();
+          var x = ((e.clientX - r.left) / r.width) * 100;
+          var y = ((e.clientY - r.top) / r.height) * 100;
+          el.style.setProperty("--jlm-mx", x + "%");
+          el.style.setProperty("--jlm-my", y + "%");
+        },
+        { passive: true }
+      );
+    });
+  }
+
+  /* ═══════════════════════════════════════════════
+     BOOT
+     ═══════════════════════════════════════════════ */
+  function boot() {
+    applyTranslations(detectLocale());
+    initCursor();
+    initSpotlight();
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+})();
+</script>

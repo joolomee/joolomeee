@@ -1,0 +1,312 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     joolomee · Contact Form — Webflow Embed
+     Coral-accented contact form with 5 fields. i18n-aware.
+     Submit handling (in priority order):
+       1. If this element has data-endpoint="https://…", POSTs JSON there.
+       2. Otherwise falls back to opening a pre-filled mailto:
+          (set data-mail="hello@example.com")
+     Add the anchor `id="contact"` to the nearest section so #contact links work.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="jlm-contact" id="contact">
+  <div class="jlm-contact__wrap">
+    <div class="jlm-contact__header">
+      <span class="jlm-contact__eyebrow" data-i18n="contact.label">Contacto</span>
+      <span class="jlm-section-line" aria-hidden="true"></span>
+      <h2 class="jlm-contact__heading jlm-gradient-text-warm" data-i18n="contact.heading">
+        Vamos criar algo incrível
+      </h2>
+      <p class="jlm-contact__subtitle" data-i18n="contact.subtitle">
+        Tem um projeto em mente? Adorava ouvir sobre ele.
+      </p>
+    </div>
+
+    <form class="jlm-contact__form"
+          data-endpoint=""
+          data-mail="hello@joolomee.com"
+          novalidate>
+      <div class="jlm-contact__row">
+        <label class="jlm-contact__field">
+          <span class="jlm-contact__label" data-i18n="contact.form.name">Nome</span>
+          <input type="text" name="name" required autocomplete="name" />
+        </label>
+        <label class="jlm-contact__field">
+          <span class="jlm-contact__label" data-i18n="contact.form.email">Email</span>
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+      </div>
+
+      <label class="jlm-contact__field">
+        <span class="jlm-contact__label" data-i18n="contact.form.service">Tipo de Serviço</span>
+        <select name="service" required>
+          <option value="Brand Identity">Brand Identity</option>
+          <option value="UI/UX Design">UI/UX Design</option>
+          <option value="Web Design &amp; Dev">Web Design &amp; Dev</option>
+          <option value="Marketing &amp; Creative">Marketing &amp; Creative</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+
+      <label class="jlm-contact__field">
+        <span class="jlm-contact__label" data-i18n="contact.form.message">Mensagem</span>
+        <textarea name="message" rows="5" required></textarea>
+      </label>
+
+      <button type="submit" class="jlm-contact__submit" data-cursor="hover">
+        <span class="jlm-contact__submit-label" data-i18n="contact.form.send">Enviar Mensagem</span>
+        <span class="jlm-contact__submit-arrow" aria-hidden="true">&rarr;</span>
+      </button>
+
+      <p class="jlm-contact__status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .jlm-contact {
+    position: relative;
+    padding: 96px 0;
+    font-family: var(--jlm-sans, "Inter", system-ui, sans-serif);
+    color: var(--jlm-fg, #f5f5f5);
+  }
+  .jlm-contact__wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header */
+  .jlm-contact__header { text-align: center; margin-bottom: 56px; }
+  .jlm-contact__eyebrow {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 0.75rem;
+    color: var(--jlm-coral, #e8787a);
+    margin-bottom: 16px;
+  }
+  .jlm-section-line {
+    display: block;
+    width: 60px; height: 2px;
+    margin: 0 auto 24px;
+    background: linear-gradient(90deg, var(--jlm-coral, #e8787a), transparent);
+  }
+  .jlm-contact__heading {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 16px;
+  }
+  .jlm-contact__subtitle {
+    color: var(--jlm-muted, #8a8a8a);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Form */
+  .jlm-contact__form { display: flex; flex-direction: column; gap: 20px; }
+  .jlm-contact__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 640px) {
+    .jlm-contact__row { grid-template-columns: 1fr 1fr; }
+  }
+
+  .jlm-contact__field { display: flex; flex-direction: column; gap: 8px; }
+  .jlm-contact__label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--jlm-muted, #8a8a8a);
+  }
+
+  .jlm-contact__form input,
+  .jlm-contact__form select,
+  .jlm-contact__form textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: var(--jlm-surface, #111);
+    border: 1px solid var(--jlm-border, #1e1e1e);
+    color: var(--jlm-fg, #f5f5f5);
+    font: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .jlm-contact__form textarea { resize: vertical; min-height: 120px; }
+  .jlm-contact__form input:focus,
+  .jlm-contact__form select:focus,
+  .jlm-contact__form textarea:focus {
+    outline: none;
+    border-color: rgba(232, 120, 122, 0.6);
+    box-shadow: 0 0 0 4px rgba(232, 120, 122, 0.1);
+  }
+  .jlm-contact__form input::placeholder,
+  .jlm-contact__form textarea::placeholder { color: rgba(138, 138, 138, 0.7); }
+
+  /* Select arrow (styled) */
+  .jlm-contact__form select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E8787A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 44px;
+  }
+
+  /* Submit */
+  .jlm-contact__submit {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 9999px;
+    border: 0;
+    background: var(--jlm-coral, #e8787a);
+    color: var(--jlm-bg, #0a0a0a);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.25s ease, background 0.3s ease, box-shadow 0.3s ease, opacity 0.2s ease;
+    box-shadow: 0 8px 24px rgba(232, 120, 122, 0.2);
+  }
+  .jlm-contact__submit:hover:not([disabled]) {
+    background: var(--jlm-coral-lt, #f2a5a7);
+    transform: scale(1.03);
+    box-shadow: 0 0 40px rgba(232, 120, 122, 0.3);
+  }
+  .jlm-contact__submit[disabled] { opacity: 0.6; cursor: wait; }
+  .jlm-contact__submit-arrow {
+    display: inline-block;
+    animation: jlm-contact-arrow 1.5s ease-in-out infinite;
+  }
+  @keyframes jlm-contact-arrow { 0%,100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+  /* Status line */
+  .jlm-contact__status {
+    min-height: 1.2em;
+    margin: 4px 0 0;
+    font-size: 0.875rem;
+    color: var(--jlm-muted, #8a8a8a);
+  }
+  .jlm-contact__status.is-ok    { color: #4ade80; }
+  .jlm-contact__status.is-error { color: var(--jlm-coral-lt, #f2a5a7); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jlm-contact__submit-arrow { animation: none !important; }
+  }
+</style>
+
+<script>
+(function () {
+  var scope = document.currentScript.parentElement;
+  var form  = scope.querySelector(".jlm-contact__form")
+           || document.querySelector(".jlm-contact__form:not([data-jlm-ready])");
+  if (!form) return;
+  form.setAttribute("data-jlm-ready", "");
+
+  var submitBtn = form.querySelector(".jlm-contact__submit");
+  var submitLabel = submitBtn.querySelector(".jlm-contact__submit-label");
+  var status = form.querySelector(".jlm-contact__status");
+  var originalLabel = submitLabel.textContent;
+
+  function t(path, fallback) {
+    try {
+      if (window.joolomee && window.joolomee.t) {
+        var v = window.joolomee.t(path);
+        if (v) return v;
+      }
+    } catch (_) {}
+    return fallback;
+  }
+
+  function setStatus(msg, kind) {
+    status.textContent = msg || "";
+    status.classList.remove("is-ok", "is-error");
+    if (kind === "ok") status.classList.add("is-ok");
+    if (kind === "error") status.classList.add("is-error");
+  }
+
+  function collect() {
+    var data = {};
+    new FormData(form).forEach(function (v, k) { data[k] = v; });
+    data.locale = (window.joolomee && window.joolomee.getLocale && window.joolomee.getLocale()) || "en";
+    data.page = location.href;
+    return data;
+  }
+
+  function openMailto(endpoint, data) {
+    var subject = "Website inquiry — " + (data.name || "Contact");
+    var body = [
+      "Name: "    + (data.name || ""),
+      "Email: "   + (data.email || ""),
+      "Service: " + (data.service || ""),
+      "",
+      "Message:",
+      data.message || ""
+    ].join("\n");
+    var url = "mailto:" + endpoint +
+              "?subject=" + encodeURIComponent(subject) +
+              "&body="    + encodeURIComponent(body);
+    window.location.href = url;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    var endpoint = form.getAttribute("data-endpoint") || "";
+    var mail     = form.getAttribute("data-mail")     || "";
+    var data = collect();
+
+    submitBtn.disabled = true;
+    submitLabel.textContent = t("contact.form.sending", "Sending...");
+    setStatus("", null);
+
+    if (endpoint) {
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json().catch(function () { return {}; });
+      })
+      .then(function () {
+        setStatus(t("contact.form.sent", "Message sent!"), "ok");
+        form.reset();
+      })
+      .catch(function () {
+        setStatus("Something went wrong. Please try again or email directly.", "error");
+      })
+      .then(function () {
+        submitBtn.disabled = false;
+        submitLabel.textContent = originalLabel;
+      });
+    } else if (mail) {
+      openMailto(mail, data);
+      setStatus(t("contact.form.sent", "Message sent!"), "ok");
+      submitBtn.disabled = false;
+      submitLabel.textContent = originalLabel;
+    } else {
+      setStatus("No endpoint configured.", "error");
+      submitBtn.disabled = false;
+      submitLabel.textContent = originalLabel;
+    }
+  });
+
+  // Refresh the submit label on locale change
+  document.addEventListener("jlm:locale", function () {
+    originalLabel = t("contact.form.send", originalLabel);
+    if (!submitBtn.disabled) submitLabel.textContent = originalLabel;
+  });
+})();
+</script>

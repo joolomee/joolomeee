@@ -1,0 +1,128 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     joolomee · Infinite Marquee — Webflow Embed
+     Dual-row scrolling brand statements: JOOLOMEE · REMEMBER ME · DESIGN WITH SOUL
+     Self-contained. Drop into a Webflow Embed element.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<section class="jlm-mq" aria-hidden="true">
+  <div class="jlm-mq__row"><div class="jlm-mq__track jlm-mq__track--fwd"></div></div>
+  <div class="jlm-mq__row"><div class="jlm-mq__track jlm-mq__track--rev"></div></div>
+  <div class="jlm-mq__fade jlm-mq__fade--l"></div>
+  <div class="jlm-mq__fade jlm-mq__fade--r"></div>
+</section>
+
+<style>
+  .jlm-mq {
+    position: relative;
+    width: 100%;
+    padding: 24px 0;
+    border-top: 1px solid var(--jlm-border, #1e1e1e);
+    border-bottom: 1px solid var(--jlm-border, #1e1e1e);
+    background: var(--jlm-bg, #0a0a0a);
+    overflow: hidden;
+    user-select: none;
+  }
+  @media (min-width: 768px) { .jlm-mq { padding: 32px 0; } }
+
+  .jlm-mq__row { overflow: hidden; }
+  .jlm-mq__row + .jlm-mq__row { margin-top: 16px; }
+  @media (min-width: 768px) {
+    .jlm-mq__row + .jlm-mq__row { margin-top: 24px; }
+  }
+
+  .jlm-mq__track {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  @media (min-width: 768px) { .jlm-mq__track { gap: 40px; } }
+
+  .jlm-mq__track--fwd { animation: jlm-mq-fwd 40s linear infinite; }
+  .jlm-mq__track--rev { animation: jlm-mq-rev 40s linear infinite; }
+
+  @keyframes jlm-mq-fwd { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes jlm-mq-rev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+  .jlm-mq__item {
+    flex-shrink: 0;
+    font-family: var(--jlm-sans, "Inter", system-ui, sans-serif);
+    font-weight: 700;
+    font-size: clamp(2rem, 6vw, 3.75rem);
+    line-height: 1;
+    color: rgba(232, 120, 122, 0.10);
+    transition: color 0.5s ease, -webkit-text-stroke-color 0.5s ease;
+  }
+  .jlm-mq:hover .jlm-mq__item { color: rgba(232, 120, 122, 0.30); }
+
+  .jlm-mq__item--outline {
+    color: transparent !important;
+    -webkit-text-stroke: 1px rgba(232, 120, 122, 0.10);
+  }
+  .jlm-mq:hover .jlm-mq__item--outline {
+    -webkit-text-stroke-color: rgba(232, 120, 122, 0.25);
+    color: rgba(232, 120, 122, 0.05) !important;
+  }
+
+  .jlm-mq__dot { opacity: 0.7; }
+
+  .jlm-mq__fade {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 64px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  @media (min-width: 768px) { .jlm-mq__fade { width: 128px; } }
+  .jlm-mq__fade--l { left: 0; background: linear-gradient(to right, var(--jlm-bg, #0a0a0a), transparent); }
+  .jlm-mq__fade--r { right: 0; background: linear-gradient(to left,  var(--jlm-bg, #0a0a0a), transparent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jlm-mq__track--fwd, .jlm-mq__track--rev { animation: none !important; }
+  }
+</style>
+
+<script>
+(function () {
+  var ITEMS = [
+    { text: "JOOLOMEE",         outline: false },
+    { text: "\u00B7",           dot: true     },
+    { text: "REMEMBER ME",      outline: true  },
+    { text: "\u00B7",           dot: true     },
+    { text: "DESIGN WITH SOUL", outline: false },
+    { text: "\u00B7",           dot: true     },
+    { text: "JOOLOMEE",         outline: true  },
+    { text: "\u00B7",           dot: true     },
+    { text: "REMEMBER ME",      outline: false },
+    { text: "\u00B7",           dot: true     },
+    { text: "DESIGN WITH SOUL", outline: true  },
+    { text: "\u00B7",           dot: true     }
+  ];
+
+  function buildSpan(item) {
+    var classes = ["jlm-mq__item"];
+    if (item.dot)     classes.push("jlm-mq__dot");
+    if (item.outline) classes.push("jlm-mq__item--outline");
+    var span = document.createElement("span");
+    span.className = classes.join(" ");
+    span.textContent = item.text;
+    return span;
+  }
+
+  function populate(track) {
+    // Build two copies of a long enough sequence for a seamless loop
+    var seq = [];
+    for (var r = 0; r < 6; r++) seq = seq.concat(ITEMS);
+    var frag = document.createDocumentFragment();
+    seq.forEach(function (it) { frag.appendChild(buildSpan(it)); });
+    // Duplicate for the -50% translate seam
+    seq.forEach(function (it) { frag.appendChild(buildSpan(it)); });
+    track.appendChild(frag);
+  }
+
+  var scope = document.currentScript.parentElement;
+  var tracks = scope.querySelectorAll(".jlm-mq__track");
+  if (!tracks.length) tracks = document.querySelectorAll(".jlm-mq__track:empty");
+  tracks.forEach(populate);
+})();
+</script>

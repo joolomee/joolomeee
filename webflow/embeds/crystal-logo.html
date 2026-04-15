@@ -1,0 +1,84 @@
+<!-- ═══════════════════════════════════════════════════════════════════════
+     joolomee · Crystal Logo — Webflow Embed
+     Drop into a Webflow Embed element. Self-contained.
+     Optional data attrs on <div class="jlm-crystal">:
+       data-size="180"        number of pixels (default 160)
+       data-color="#E8787A"   hex color (default coral)
+       data-animate="false"   disable float + glow pulse
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="jlm-crystal" data-size="180" data-color="#E8787A" data-animate="true"></div>
+
+<style>
+  .jlm-crystal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+  .jlm-crystal svg { display: block; }
+  @keyframes jlm-crystal-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); filter: drop-shadow(0 0 6px rgba(232,120,122,0.3)); }
+    50%      { transform: translateY(-10px) rotate(2deg); filter: drop-shadow(0 0 14px rgba(232,120,122,0.55)); }
+  }
+  .jlm-crystal[data-animate="true"] svg {
+    animation: jlm-crystal-float 5s ease-in-out infinite;
+    transform-origin: 50% 50%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .jlm-crystal svg { animation: none !important; }
+  }
+</style>
+
+<script>
+(function () {
+  var wraps = document.currentScript.parentElement.querySelectorAll(".jlm-crystal");
+  // Fallback: pick any unrendered crystal wrappers in the doc
+  if (!wraps.length) wraps = document.querySelectorAll(".jlm-crystal:not([data-jlm-rendered])");
+
+  function render(el) {
+    if (el.hasAttribute("data-jlm-rendered")) return;
+    el.setAttribute("data-jlm-rendered", "");
+    var size  = parseInt(el.getAttribute("data-size") || "160", 10);
+    var color = el.getAttribute("data-color") || "#E8787A";
+    var animate = el.getAttribute("data-animate") !== "false";
+    var uid = "jlm-glow-" + Math.random().toString(36).slice(2, 8);
+
+    var facets = [
+      // [points, opacity]
+      ["50,5 65,25 35,25", 0.95],
+      ["50,5 35,25 18,45", 0.70],
+      ["50,5 65,25 82,45", 0.85],
+      ["35,25 18,45 30,55", 0.55],
+      ["35,25 65,25 70,55 30,55", 0.75],
+      ["65,25 82,45 70,55", 0.65],
+      ["18,45 30,55 50,95", 0.60],
+      ["30,55 50,65 50,95", 0.80],
+      ["70,55 50,65 50,95", 0.90],
+      ["82,45 70,55 50,95", 0.50]
+    ];
+    var polys = facets.map(function (f) {
+      return '<polygon points="' + f[0] + '" fill="' + color + '" opacity="' + f[1] + '"/>';
+    }).join("");
+
+    var lines = [
+      '<line x1="35" y1="25" x2="30" y2="55" stroke="' + color + '" stroke-width="0.5" opacity="0.3"/>',
+      '<line x1="65" y1="25" x2="70" y2="55" stroke="' + color + '" stroke-width="0.5" opacity="0.3"/>',
+      '<line x1="50" y1="65" x2="50" y2="95" stroke="' + color + '" stroke-width="0.5" opacity="0.2"/>',
+      '<line x1="30" y1="55" x2="70" y2="55" stroke="' + color + '" stroke-width="0.5" opacity="0.2"/>',
+      '<line x1="50" y1="5"  x2="50" y2="65" stroke="' + color + '" stroke-width="0.3" opacity="0.15"/>'
+    ].join("");
+
+    el.innerHTML =
+      '<svg width="' + size + '" height="' + size + '" viewBox="0 0 100 100" ' +
+      'fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="joolomee crystal">' +
+        '<defs><filter id="' + uid + '" x="-50%" y="-50%" width="200%" height="200%">' +
+          '<feGaussianBlur stdDeviation="' + (animate ? 3 : 0) + '" result="b"/>' +
+          '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
+        '</filter></defs>' +
+        '<g filter="url(#' + uid + ')">' + polys + lines + '</g>' +
+      '</svg>';
+  }
+
+  wraps.forEach(render);
+})();
+</script>
