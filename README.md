@@ -1,3 +1,21 @@
+# Joolomee — Project Showcase
+
+**Joana Lopes Mesquita · Full Stack Designer & Creative Director**
+
+### Featured project: Joolomee portfolio
+
+Brand identity, UX, multilingual content and frontend development brought together in a personal portfolio and services website.
+
+**Next.js · React · TypeScript · Tailwind CSS · Framer Motion · Lenis**
+
+[Read the project case study](showcase/joolomee.md) · [Explore the website](https://joolomee.com) · [LinkedIn](https://linkedin.com/in/jolopesmesquita)
+
+The case study presents the project for professional evaluation. The Joolomee website source repository remains private; its source code and editable design files are not included in the showcase. Original Joolomee showcase material: © 2026 Joana Lopes Mesquita. All rights reserved, subject to applicable law and GitHub's terms.
+
+---
+
+## Existing repository development notes
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
